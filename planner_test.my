@@ -1,0 +1,61 @@
+import { RoadMap, road, shortestRoute } from "local/marimay-route-planner/planner";
+
+fn routeIsMissing(roads: RoadMap, start: int, target: int): bool {
+  return match shortestRoute(roads, start, target) {
+    case Some(_) => false;
+    case None => true;
+  };
+}
+
+@test
+fn findsFastestDeliveryRoute(): void {
+  const route = match shortestRoute(deliveryNetwork(), 0, 4) {
+    case Some(value) => value;
+    case None => panic("expected a route through the delivery network");
+  };
+  if route.nodes.length() != 5 || route.nodes[0] != 0 || route.nodes[1] != 2 || route.nodes[2] != 1 || route.nodes[
+    3
+  ] != 3 || route.nodes[4] != 4 || route.totalMinutes != 19.0 {
+    panic("route planner selected a non-optimal delivery route");
+  }
+}
+
+@test
+fn handlesStartAtDestination(): void {
+  const roads: RoadMap = [[]];
+  const route = match shortestRoute(roads, 0, 0) {
+    case Some(value) => value;
+    case None => panic("a zero-length route must exist");
+  };
+  if route.nodes.length() != 1 || route.nodes[0] != 0 || route.totalMinutes != 0.0 {
+    panic("zero-length route has the wrong shape or cost");
+  }
+}
+
+@test
+fn reportsUnreachableDestination(): void {
+  const roads: RoadMap = [[], []];
+  if !routeIsMissing(roads, 0, 1) {
+    panic("unreachable destination produced a route");
+  }
+}
+
+@test
+fn rejectsInvalidRouteRequests(): void {
+  const roads: RoadMap = [[], []];
+  if !routeIsMissing(roads, -1, 1) || !routeIsMissing(roads, 0, 2) {
+    panic("out-of-range route request was accepted");
+  }
+}
+
+@test
+fn rejectsInvalidRoadNetworks(): void {
+  const invalidEndpoint: RoadMap = [[road(2, 1.0)], []];
+  const negativeTravelTime: RoadMap = [[road(1, -1.0)], []];
+  if !routeIsMissing(invalidEndpoint, 0, 1) {
+    panic("out-of-range road endpoint was accepted");
+  }
+  if !routeIsMissing(negativeTravelTime, 0, 1) {
+    panic("negative travel time was accepted");
+  }
+}
