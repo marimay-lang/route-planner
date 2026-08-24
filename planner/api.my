@@ -1,13 +1,13 @@
 public type Road {
-  to: int;
-  minutes: f64;
+  to: int,
+  minutes: f64,
 }
 
 public type RoadMap = [][]Road;
 
 public type Route {
-  public nodes: []int;
-  public totalMinutes: f64;
+  public nodes: []int,
+  public totalMinutes: f64,
 }
 
 public fn road(to: int, minutes: f64): Road {
@@ -16,8 +16,8 @@ public fn road(to: int, minutes: f64): Road {
 
 fn validMap(roads: RoadMap): bool {
   const locationCount = roads.length();
-  for const outgoing of roads {
-    for const currentRoad of outgoing {
+  for outgoing in roads {
+    for currentRoad in outgoing {
       if currentRoad.to < 0 || currentRoad.to >= locationCount || currentRoad.minutes < 0.0 {
         return false;
       }
@@ -41,53 +41,53 @@ fn reverse(values: []int): void {
 fn buildRoute(previous: []int, distances: []f64, start: int, target: int): Option<Route> {
   let nodes: []int = [];
   let current = target;
-  for let step = 0; step < previous.length(); step += 1 {
-    nodes.push(current);
+  for step in 0..previous.length() {
+    const _ = nodes.push(current);
     if current == start {
       reverse(nodes);
       return Some(Route { nodes, totalMinutes: distances[target] });
     }
     current = previous[current];
     if current < 0 {
-      return None<Route>();
+      return None;
     }
   }
-  return None<Route>();
+  return None;
 }
 
 public fn shortestRoute(roads: RoadMap, start: int, target: int): Option<Route> {
   const locationCount = roads.length();
   if start < 0 || start >= locationCount || target < 0 || target >= locationCount {
-    return None<Route>();
+    return None;
   }
   if !validMap(roads) {
-    return None<Route>();
+    return None;
   }
   const infinity = 1.0e300;
   let distances: []f64 = [];
   let previous: []int = [];
   let visited: []bool = [];
-  for let location = 0; location < locationCount; location += 1 {
-    distances.push(infinity);
-    previous.push(-1);
-    visited.push(false);
+  for location in 0..locationCount {
+    const _ = distances.push(infinity);
+    const _ = previous.push(-1);
+    const _ = visited.push(false);
   }
   distances[start] = 0.0;
-  for let iteration = 0; iteration < locationCount; iteration += 1 {
+  for iteration in 0..locationCount {
     let selected = -1;
-    for let location = 0; location < locationCount; location += 1 {
+    for location in 0..locationCount {
       if !visited[location] && (selected == -1 || distances[location] < distances[selected]) {
         selected = location;
       }
     }
     if selected == -1 || distances[selected] == infinity {
-      return None<Route>();
+      return None;
     }
     if selected == target {
       return buildRoute(previous, distances, start, target);
     }
     visited[selected] = true;
-    for const currentRoad of roads[selected] {
+    for currentRoad in roads[selected] {
       const candidate = distances[selected] + currentRoad.minutes;
       if candidate < distances[currentRoad.to] {
         distances[currentRoad.to] = candidate;
@@ -95,5 +95,5 @@ public fn shortestRoute(roads: RoadMap, start: int, target: int): Option<Route> 
       }
     }
   }
-  return None<Route>();
+  return None;
 }

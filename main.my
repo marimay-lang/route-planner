@@ -5,7 +5,7 @@ import { Route, shortestRoute } from "local/marimay-route-planner/planner";
 
 fn printRoute(route: Route, names: []string): Result<void, IoError> {
   println("Optimal delivery route:")?;
-  for const location of route.nodes {
+  for location in route.nodes {
     println(names[location])?;
   }
   println("Total travel time in minutes:")?;
@@ -16,8 +16,8 @@ fn printRoute(route: Route, names: []string): Result<void, IoError> {
 fn main(): Result<void, IoError> {
   const names = locationNames();
   const route = match shortestRoute(deliveryNetwork(), 0, 4) {
-    case Some(value) => value;
-    case None => panic("delivery network has no valid route");
+    Some(value) => value,
+    None => panic("delivery network has no valid route"),
   };
   return printRoute(route, names);
 }
