@@ -1,45 +1,36 @@
-# Marimay Route Planner
+# route-planner
 
-A small, useful application written against the currently executable Marimay
-0.1 preview. It computes the fastest delivery route with Dijkstra's algorithm,
-prints every stop, and reports the total travel time.
+![A route-planning example — a Marimay learning project](.github/banner.svg)
 
-The current Marimay preview does not yet expose program arguments or the accepted
-filesystem API to source programs. For now, the application uses an editable
-configuration in `scenario.my`. Replace `locationNames()` and
-`deliveryNetwork()` to plan another network; every location must have one row
-in the adjacency list.
+> **Personal learning project.** This open-source MIT project is part of
+> [Marimay](https://github.com/marimay-lang/marimay), my hobby programming-language project.
+> I maintain it in my spare time to learn by building. APIs and tooling may
+> change, and progress may be intermittent.
 
-## Run
+A small delivery-route example written in Marimay. It validates a graph,
+finds a shortest route with Dijkstra's algorithm, and prints the stops and
+total travel time.
 
-The commands below assume this project and the Marimay repository are siblings in
-`~/Projects/Marimay`:
+**Status:** Personal learning example for the Marimay 0.1 preview. Its scenario is configured
+directly in `scenario.my`; platform-wide compatibility has not been established.
+
+## Run and verify
 
 ```sh
-../marimay/build/release/mmay check .
-../marimay/build/release/mmay run .
-../marimay/build/release/mmay test --engine both .
+mmay check .
+mmay run .
+mmay test . --engine both
 ```
 
-Expected output:
+Put a compatible `mmay` on your `PATH`. The supplied route visits Depot, Central
+Hub, West Hub, East Hub and Customer with a total time of `19.0` minutes.
+Edit `locationNames()` and `deliveryNetwork()` in `scenario.my` to try another
+graph; every location needs an adjacency-list row.
 
-```text
-Optimal delivery route:
-Depot
-Central Hub
-West Hub
-East Hub
-Customer
-Total travel time in minutes:
-19.0
-```
+`planner/api.my` contains graph validation, search and path reconstruction.
+Tests cover the expected route, identical endpoints, unreachable destinations
+and invalid graph inputs.
 
-## Project layout
+## License
 
-- `planner/api.my` contains reusable graph validation, Dijkstra search, and
-  path reconstruction.
-- `scenario.my` is the editable delivery network.
-- `main.my` renders the selected route.
-- `planner_test.my` covers the optimal route, start-at-destination,
-  unreachable destinations, invalid requests, invalid endpoints, and negative
-  travel times.
+[MIT](LICENSE). Existing copyright attribution is retained.

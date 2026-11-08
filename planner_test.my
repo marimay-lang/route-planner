@@ -13,7 +13,13 @@ fn findsFastestDeliveryRoute(): void {
     Some(value) => value,
     None => panic("expected a route through the delivery network"),
   };
-  if route.nodes.length() != 5 || route.nodes[0] != 0 || route.nodes[1] != 2 || route.nodes[2] != 1 || route.nodes[3] != 3 || route.nodes[4] != 4 || route.totalMinutes != 19.0 {
+  if route.nodes.length() != 5
+    || route.nodes[0] != 0
+    || route.nodes[1] != 2
+    || route.nodes[2] != 1
+    || route.nodes[3] != 3
+    || route.nodes[4] != 4
+    || route.totalMinutes != 19.0 {
     panic("route planner selected a non-optimal delivery route");
   }
 }
